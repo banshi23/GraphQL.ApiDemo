@@ -1,15 +1,12 @@
-﻿using GraphQL.ApiDemo.Models;
-using GraphQL.ApiDemo.Models.Authentication;
-using GraphQL.ApiDemo.Models.Users;
+﻿using GraphQL.ApiDemo.Models.Users;
 
 namespace GraphQL.ApiDemo.Repositories
 {
 	public interface IUserService
 	{
-		Task<User> CreateUserAsync(CreateUserInput createUserSettingInput);
-		IExecutable<User> GetUser();
-		IExecutable<User> GetUserById([ID] int id);
-		TokenPayload Login(LoginInput loginInput);
-		TokenPayload RenewAccessToken(RenewTokenInput renewTokenInput);
+		IExecutable<UserProfile> GetUser();
+		IExecutable<UserProfile> GetUserById([ID] int id);
+		Task<UserProfile> CreateOrUpdateUserAsync(CreateOrUpdateUserInput input);
+		Task<bool> DeleteUserAsync(int id);
 	}
 }

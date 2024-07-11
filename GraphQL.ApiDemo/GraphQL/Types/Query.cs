@@ -1,33 +1,15 @@
-﻿using GraphQL.ApiDemo.Entities;
+﻿using GraphQL.ApiDemo.Models.Users;
 using GraphQL.ApiDemo.Repositories;
-using HotChocolate;
 using HotChocolate.Authorization;
-using HotChocolate.Data;
-using HotChocolate.Types;
 namespace GraphQL.ApiDemo.GraphQL.Types
 {
 	public class Query
 	{
-		//[UsePaging(IncludeTotalCount = true)]
-		//[UseProjection]
-		//[UseSorting]
-		//[UseFiltering]
 		[Authorize]
-		public async Task<List<ProductDetails>> GetProductListAsync([Service] IProductService productService)
-		{
-			return await productService.ProductListAsync();
-		}
-		//[UseFirstOrDefault]
-		[Authorize]
-		public async Task<ProductDetails> GetProductDetailsByIdAsync([Service] IProductService productService, Guid productId)
-		{
-			return await productService.GetProductDetailByIdAsync(productId);
-		}
+		[UsePaging]
+		public IExecutable<UserProfile> GetUsers([Service] IUserService userService) => userService.GetUser();
 
-		[GraphQLDeprecated("This query is deprecated.")]
-		public async Task<List<ProductDetails>> GetDepricatedProductListAsync([Service] IProductService productService)
-		{
-			return await productService.ProductListAsync();
-		}
+		[Authorize]
+		public IExecutable<UserProfile> GetUserById([Service] IUserService userService, [ID] int id) => userService.GetUserById(id);
 	}
 }

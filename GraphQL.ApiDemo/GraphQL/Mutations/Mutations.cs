@@ -1,52 +1,29 @@
-﻿using GraphQL.ApiDemo.Entities;
-using GraphQL.ApiDemo.Models;
-using GraphQL.ApiDemo.Models.Authentication;
-using GraphQL.ApiDemo.Models.Users;
+﻿using GraphQL.ApiDemo.Models.Users;
 using GraphQL.ApiDemo.Repositories;
 using HotChocolate.Authorization;
-
 
 namespace GraphQL.ApiDemo.GraphQL.Mutations
 {
 	public class Mutations
 	{
 		[Authorize]
-		public async Task<bool> AddProductAsync([Service] IProductService productService, ProductDetails productDetails)
-		{
-			return await productService.AddProductAsync(productDetails);
-		}
-		[Authorize]
-		public async Task<bool> UpdateProductAsync([Service] IProductService productService, ProductDetails productDetails)
-		{
-			return await productService.UpdateProductAsync(productDetails);
-		}
-		[Authorize]
-		public async Task<bool> DeleteProductAsync([Service] IProductService productService, Guid productId)
-		{
-			return await productService.DeleteProductAsync(productId);
-		}
-
-		[Authorize]
-		public async Task<User> CreateUser([Service] IUserService userService, CreateUserInput createUserInput)
+		public async Task<UserProfile> CreateUser([Service] IUserService userService, CreateOrUpdateUserInput createUserInput)
 		{
 			try
 			{
-				var user = await userService.CreateUserAsync(createUserInput);
+				var user = await userService.CreateOrUpdateUserAsync(createUserInput);
 
 				return user;
 			}
 			catch (Exception ex)
 			{
-				return null;
+				throw new GraphQLException(new Error(ex.Message));
 			}
 		}
-		public TokenPayload Login([Service] IUserService userService, LoginInput loginInput)
+		[Authorize]
+		public async Task<bool> DeleteUserAsync([Service] IUserService userService, int id)
 		{
-			return userService.Login(loginInput);
-		}
-		public TokenPayload RenewAccessToken([Service] IUserService userService, RenewTokenInput renewTokenInput)
-		{
-			return userService.RenewAccessToken(renewTokenInput);
+			return await userService.DeleteUserAsync(id);
 		}
 	}
 }
